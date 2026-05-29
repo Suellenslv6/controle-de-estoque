@@ -1,0 +1,55 @@
+1
+Xbox Series X
+processador AMD Zen 2 de 8 núcleos
+Informatica
+16 GB de RAM GDDR6
+5SSD de 1 TB
+5500.00
+1
+Switch Padrão
+processador NVIDIA Tegra X1
+Informatica
+32 GB de armazenamento
+4310 mAh recarregável
+2600.00
+Switch Lite
+processador NVIDIA Tegra X1
+informatica
+32 GB de armazenamento
+3.570 mAh recarregável
+1900.00
+1
+PlayStation 5
+processador AMD Zen 2 de 8 núcleos
+Informatica
+16 GB de memória RAM GDDR6
+AMD Radeon Navi 
+4400.00
+1
+PlayStation 5 Pro
+AMD Ryzen Zen 2 de 8 núcleos
+informatica
+de 16 GB GDDR6
+de 2TB de SSD
+6000.00
+1
+Lenovo Legion Go
+AMD Z1 Extreme
+Informatica
+512GB PCIe 4.0
+modelo 8APU1-83E1002WHH
+7500.00
+2
+3
+Informatica
+4
+1
+5
+Produto Inexistente
+5
+Mouse Logitech
+6
+Cadeira Gamer
+1200.00
+7
+0
