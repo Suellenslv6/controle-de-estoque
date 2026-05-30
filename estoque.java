@@ -1,6 +1,6 @@
 import java.util.Scanner;
 
-public class ControleEstoque {
+public class estoque {
 
     static Scanner sc = new Scanner(System.in);
 
