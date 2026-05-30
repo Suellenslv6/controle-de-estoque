@@ -1,4 +1,4 @@
-public class Produto {
+public class produto {
 
     String nome;
     int qtdEstoque;
