@@ -6,7 +6,7 @@ public class Estoque {
 
     public static void main(String[] args) {
 
-        Produto[] produtos = new Produto[100];
+        Produto[] produtos = new Produto[5];
         int qtd = 0;
         int opcao;
 
