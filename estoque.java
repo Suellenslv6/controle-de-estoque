@@ -1,259 +1,282 @@
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
 import java.util.Scanner;
 
-public class estoque {
-    String nome, descricao;
+public class Produto {
+
+    String nome;
+    int qtdEstoque;
+    double precoUnitario;
     String categoria;
-    int qtdEmEstoque;
     int qtdMinima;
-    Double precoUnit;
-    public static Scanner scanner = new Scanner(System.in);
+
+}
+
+public class ControleEstoque {
+
+    static Scanner sc = new Scanner(System.in);
+
     public static void main(String[] args) {
-       public Produto(String nome, String descricao, int qtdEstoque, double precoUnitario, String categoria, int qtdMinima) {
-        this.nome = nome;
-        this.descricao = descricao;
-        this.qtdEstoque = qtdEstoque;
-        this.precoUnitario = precoUnitario;
-        this.categoria = categoria;
-        this.qtdMinima = qtdMinima;
-       }
+
+        Produto[] produtos = new Produto[100];
+        int qtd = 0;
+        int opcao;
+
+        do {
+
+            System.out.println("\n===== CONTROLE DE ESTOQUE =====");
+            System.out.println("1 - Cadastrar produto");
+            System.out.println("2 - Listar produtos");
+            System.out.println("3 - Filtrar por categoria");
+            System.out.println("4 - Ordenar por categoria");
+            System.out.println("5 - Remover produto");
+            System.out.println("6 - Atualizar preço");
+            System.out.println("7 - Listagem com subtotal por categoria");
+            System.out.println("0 - Sair");
+            System.out.print("Opção: ");
+
+            opcao = sc.nextInt();
+            sc.nextLine();
+
+            switch (opcao) {
+
+                case 1:
+                    qtd = cadastrarProduto(produtos, qtd);
+                    break;
+
+                case 2:
+                    listarProdutos(produtos, qtd);
+                    break;
+
+                case 3:
+                    filtrarCategoria(produtos, qtd);
+                    break;
+
+                case 4:
+                    ordenarCategoria(produtos, qtd);
+                    break;
+
+                case 5:
+                    qtd = removerProduto(produtos, qtd);
+                    break;
+
+                case 6:
+                    atualizarPreco(produtos, qtd);
+                    break;
+
+                case 7:
+                    subtotalPorCategoria(produtos, qtd);
+                    break;
+
+                case 0:
+                    System.out.println("Programa encerrado.");
+                    break;
+
+                default:
+                    System.out.println("Opção inválida!");
+            }
+
+        } while (opcao != 0);
+
     }
 
-    // 1. CADASTRAR PRODUTOS
-    private static void cadastrarProduto() {
-        System.out.println("\n--- CADASTRAR PRODUTO ---");
+    // ------------------------------------------------
 
-        System.out.print("Nome do produto: ");
-        String nome = scanner.nextLine().trim();
+    public static int cadastrarProduto(Produto[] v, int qtd) {
 
-        System.out.print("Descricao: ");
-        String descricao = scanner.nextLine().trim();
+        if (qtd >= v.length) {
+            System.out.println("Estoque cheio!");
+            return qtd;
+        }
 
-        System.out.print("Categoria: ");
-        String categoria = scanner.nextLine().trim();
+        Produto p = new Produto();
+
+        System.out.print("Nome: ");
+        p.nome = sc.nextLine();
 
         System.out.print("Quantidade em estoque: ");
-        int qtd = lerInt();
+        p.qtdEstoque = sc.nextInt();
 
-        System.out.print("Quantidade minima: ");
-        int qtdMin = lerInt();
+        System.out.print("Preço unitário: ");
+        p.precoUnitario = sc.nextDouble();
+        sc.nextLine();
 
-        System.out.print("Preco unitario (R$): ");
-        double preco = lerDouble();
+        System.out.print("Categoria: ");
+        p.categoria = sc.nextLine();
 
-        Produto p = new Produto(nome, descricao, qtd, preco, categoria, qtdMin);
-        produtos.add(p);
+        System.out.print("Quantidade mínima: ");
+        p.qtdMinima = sc.nextInt();
+        sc.nextLine();
 
-        System.out.println("\n[OK] Produto '" + nome + "' cadastrado com sucesso!");
+        v[qtd] = p;
+
+        System.out.println("Produto cadastrado!");
+
+        return qtd + 1;
     }
 
-    
-    // 2. LISTAR PRODUTOS
-    private static void listarProdutos() {
-        System.out.println("\n--- LISTAGEM DE PRODUTOS ---");
-        if (produtos.isEmpty()) {
-            System.out.println("[INFO] Nenhum produto cadastrado.");
+    // ------------------------------------------------
+
+    public static void listarProdutos(Produto[] v, int qtd) {
+
+        if (qtd == 0) {
+            System.out.println("Nenhum produto cadastrado.");
             return;
         }
-        imprimirCabecalho();
-        for (Produto p : produtos) {
-            System.out.println(p);
+
+        for (int i = 0; i < qtd; i++) {
+
+            System.out.println("\nProduto " + (i + 1));
+
+            System.out.println("Nome: " + v[i].nome);
+            System.out.println("Quantidade: " + v[i].qtdEstoque);
+            System.out.println("Preço: R$ " + v[i].precoUnitario);
+            System.out.println("Categoria: " + v[i].categoria);
+            System.out.println("Qtd mínima: " + v[i].qtdMinima);
+
+            if (v[i].qtdEstoque < v[i].qtdMinima) {
+                System.out.println("ATENÇÃO: Estoque abaixo do mínimo!");
+            }
         }
-        System.out.println("Total de produtos: " + produtos.size());
     }
 
-  
-    // 3. FILTRAR POR CATEGORIA
-    private static void filtrarPorCategoria() {
-        System.out.println("\n--- FILTRAR POR CATEGORIA ---");
+    // ------------------------------------------------
+
+    public static void filtrarCategoria(Produto[] v, int qtd) {
+
         System.out.print("Digite a categoria: ");
-        String cat = scanner.nextLine().trim();
+        String categoria = sc.nextLine();
 
-        List<Produto> filtrados = new ArrayList<>();
-        for (Produto p : produtos) {
-            if (p.getCategoria().equalsIgnoreCase(cat)) {
-                filtrados.add(p);
+        boolean encontrou = false;
+
+        for (int i = 0; i < qtd; i++) {
+
+            if (v[i].categoria.equalsIgnoreCase(categoria)) {
+
+                System.out.println(
+                        v[i].nome +
+                        " | Estoque: " + v[i].qtdEstoque +
+                        " | Preço: R$ " + v[i].precoUnitario);
+
+                encontrou = true;
             }
         }
 
-        if (filtrados.isEmpty()) {
-            System.out.println("[INFO] Nenhum produto encontrado na categoria '" + cat + "'.");
-        } else {
-            System.out.println("Produtos da categoria '" + cat + "':");
-            imprimirCabecalho();
-            for (Produto p : filtrados) {
-                System.out.println(p);
-            }
+        if (!encontrou) {
+            System.out.println("Categoria não encontrada.");
         }
     }
 
-   
-    // 4. ORDENAR PRODUTOS
-    private static void ordenarProdutos() {
-        if (produtos.isEmpty()) {
-            System.out.println("\n[INFO] Nenhum produto cadastrado.");
-            return;
-        }
-        System.out.println("\n--- ORDENAR PRODUTOS ---");
-        System.out.println("Ordenar por:");
-        System.out.println("  1 - Nome (A-Z)");
-        System.out.println("  2 - Preco (menor ao maior)");
-        System.out.println("  3 - Quantidade em estoque (menor ao maior)");
-        System.out.println("  4 - Categoria (A-Z)");
-        System.out.print("Escolha: ");
+    // ------------------------------------------------
 
-        int op = lerInt();
-        switch (op) {
-            case 1 -> produtos.sort(Comparator.comparing(p -> p.getNome().toLowerCase()));
-            case 2 -> produtos.sort(Comparator.comparingDouble(Produto::getPrecoUnitario));
-            case 3 -> produtos.sort(Comparator.comparingInt(Produto::getQtdEstoque));
-            case 4 -> produtos.sort(Comparator.comparing(p -> p.getCategoria().toLowerCase()));
-            default -> { System.out.println("[ERRO] Opcao invalida."); return; }
-        }
+    public static void ordenarCategoria(Produto[] v, int qtd) {
 
-        System.out.println("\n[OK] Produtos ordenados com sucesso!");
-        imprimirCabecalho();
-        for (Produto p : produtos) {
-            System.out.println(p);
-        }
-    }
+        for (int i = 0; i < qtd - 1; i++) {
 
-   
-    // 5. REMOVER PRODUTO
-    private static void removerProduto() {
-        System.out.println("\n--- REMOVER PRODUTO ---");
-        if (produtos.isEmpty()) {
-            System.out.println("[INFO] Nenhum produto cadastrado.");
-            return;
-        }
+            for (int j = i + 1; j < qtd; j++) {
 
-        System.out.print("Digite o nome do produto a remover: ");
-        String nome = scanner.nextLine().trim();
+                if (v[i].categoria.compareToIgnoreCase(v[j].categoria) > 0) {
 
-        Iterator<Produto> it = produtos.iterator();
-        boolean removido = false;
-        while (it.hasNext()) {
-            Produto p = it.next();
-            if (p.getNome().equalsIgnoreCase(nome)) {
-                it.remove();
-                removido = true;
-                break;
+                    Produto aux = v[i];
+                    v[i] = v[j];
+                    v[j] = aux;
+                }
             }
         }
 
-        if (removido) {
-            System.out.println("[OK] Produto '" + nome + "' removido com sucesso!");
-        } else {
-            System.out.println("[ERRO] Produto '" + nome + "' nao encontrado.");
-        }
+        System.out.println("Produtos ordenados por categoria.");
     }
 
-    // 6. ATUALIZAR PRECO
-    private static void atualizarPreco() {
-        System.out.println("\n--- ATUALIZAR PRECO ---");
-        if (produtos.isEmpty()) {
-            System.out.println("[INFO] Nenhum produto cadastrado.");
-            return;
-        }
+    // ------------------------------------------------
+
+    public static int removerProduto(Produto[] v, int qtd) {
 
         System.out.print("Digite o nome do produto: ");
-        String nome = scanner.nextLine().trim();
+        String nome = sc.nextLine();
 
-        for (Produto p : produtos) {
-            if (p.getNome().equalsIgnoreCase(nome)) {
-                System.out.printf("Preco atual de '%s': R$ %.2f%n", p.getNome(), p.getPrecoUnitario());
-                System.out.print("Novo preco (R$): ");
-                double novoPreco = lerDouble();
-                p.setPrecoUnitario(novoPreco);
-                System.out.println("[OK] Preco atualizado para R$ " + df.format(novoPreco));
+        for (int i = 0; i < qtd; i++) {
+
+            if (v[i].nome.equalsIgnoreCase(nome)) {
+
+                for (int j = i; j < qtd - 1; j++) {
+                    v[j] = v[j + 1];
+                }
+
+                System.out.println("Produto removido.");
+                return qtd - 1;
+            }
+        }
+
+        System.out.println("Produto não encontrado.");
+
+        return qtd;
+    }
+
+    // ------------------------------------------------
+
+    public static void atualizarPreco(Produto[] v, int qtd) {
+
+        System.out.print("Nome do produto: ");
+        String nome = sc.nextLine();
+
+        for (int i = 0; i < qtd; i++) {
+
+            if (v[i].nome.equalsIgnoreCase(nome)) {
+
+                System.out.print("Novo preço: ");
+                v[i].precoUnitario = sc.nextDouble();
+                sc.nextLine();
+
+                System.out.println("Preço atualizado.");
                 return;
             }
         }
-        System.out.println("[ERRO] Produto '" + nome + "' nao encontrado.");
+
+        System.out.println("Produto não encontrado.");
     }
 
-    
-    // 7. LISTAGEM COM SUBTOTAL POR CATEGORIA
-    private static void listagemComSubtotal() {
-        System.out.println("\n--- LISTAGEM COM SUBTOTAL POR CATEGORIA ---");
-        if (produtos.isEmpty()) {
-            System.out.println("[INFO] Nenhum produto cadastrado.");
+    // ------------------------------------------------
+
+    public static void subtotalPorCategoria(Produto[] v, int qtd) {
+
+        if (qtd == 0) {
+            System.out.println("Nenhum produto cadastrado.");
             return;
         }
 
-        // Ordenar por categoria
-        List<Produto> ordenados = new ArrayList<>(produtos);
-        ordenados.sort(Comparator.comparing(p -> p.getCategoria().toLowerCase()));
+        ordenarCategoria(v, qtd);
 
-        double totalGeral = 0;
-        String categoriaAtual = null;
+        String categoriaAtual = "";
         double subtotal = 0;
+        double totalGeral = 0;
 
-        for (int i = 0; i < ordenados.size(); i++) {
-            Produto p = ordenados.get(i);
+        for (int i = 0; i < qtd; i++) {
 
-            // Nova categoria encontrada
-            if (!p.getCategoria().equalsIgnoreCase(categoriaAtual)) {
-                // Imprime subtotal da categoria anterior
-                if (categoriaAtual != null) {
-                    System.out.printf("  %-47s Subtotal: R$ %10.2f%n", "", subtotal);
-                    System.out.println();
+            if (!v[i].categoria.equalsIgnoreCase(categoriaAtual)) {
+
+                if (!categoriaAtual.equals("")) {
+                    System.out.printf("Subtotal: R$ %.2f\n\n", subtotal);
                 }
-                categoriaAtual = p.getCategoria();
+
+                categoriaAtual = v[i].categoria;
                 subtotal = 0;
-                System.out.println("Categoria: " + categoriaAtual.toUpperCase());
-                System.out.println("  " + "-".repeat(90));
-                imprimirCabecalho("  ");
+
+                System.out.println("Categoria: " + categoriaAtual);
             }
 
-            System.out.println("  " + p);
-            subtotal += p.getValorTotalEstoque();
-            totalGeral += p.getValorTotalEstoque();
+            double valorProduto =
+                    v[i].qtdEstoque * v[i].precoUnitario;
+
+            System.out.printf(
+                    "%s - %d x %.2f = R$ %.2f\n",
+                    v[i].nome,
+                    v[i].qtdEstoque,
+                    v[i].precoUnitario,
+                    valorProduto);
+
+            subtotal += valorProduto;
+            totalGeral += valorProduto;
         }
 
-        // Subtotal da ultima categoria
-        if (categoriaAtual != null) {
-            System.out.printf("  %-47s Subtotal: R$ %10.2f%n", "", subtotal);
-        }
-
-        System.out.println();
-        System.out.println("=".repeat(94));
-        System.out.printf("  TOTAL GERAL EM ESTOQUE:  R$ %,.2f%n", totalGeral);
-        System.out.println("=".repeat(94));
-    }
-
-    // ─────────────────────────────────────────────
-    // HELPERS
-    // ─────────────────────────────────────────────
-    private static void imprimirCabecalho() {
-        imprimirCabecalho("");
-    }
-
-    private static void imprimirCabecalho(String prefix) {
-        System.out.println(prefix + String.format("%-20s | %-15s | %-9s | %-10s | %-15s | %-14s",
-                "NOME", "CATEGORIA", "QTD ESTQ", "QTD MIN", "PRECO UNIT", "TOTAL ESTQ"));
-        System.out.println(prefix + "-".repeat(90));
-    }
-
-    private static int lerInt() {
-        while (true) {
-            try {
-                return Integer.parseInt(scanner.nextLine().trim());
-            } catch (NumberFormatException e) {
-                System.out.print("[ERRO] Digite um numero inteiro valido: ");
-            }
-        }
-    }
-
-    private static double lerDouble() {
-        while (true) {
-            try {
-                return Double.parseDouble(scanner.nextLine().trim().replace(",", "."));
-            } catch (NumberFormatException e) {
-                System.out.print("[ERRO] Digite um valor valido (ex: 10.50): ");
-            }
-        }
+        System.out.printf("Subtotal: R$ %.2f\n", subtotal);
+        System.out.printf("\nTOTAL GERAL: R$ %.2f\n", totalGeral);
     }
 }
